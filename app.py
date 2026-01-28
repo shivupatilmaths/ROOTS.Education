@@ -8,7 +8,7 @@ from streamlit_option_menu import option_menu
 # --- 1. CONFIGURATION & CSS ---
 st.set_page_config(
     page_title="ROOTS Education",
-    page_icon="resources/images/logo.png",
+    page_icon="Resources/images/logo.png",
     layout="wide"
 )
 
@@ -71,7 +71,7 @@ if 'student_name' not in st.session_state: st.session_state.student_name = "Gues
 
 # --- 3. HEADER & MENU ---
 try:
-    logo_html = get_img_with_href("resources/images/logo.png", 100)
+    logo_html = get_img_with_href("Resources/images/logo.png", 100)
 except:
     logo_html = "<h2>ROOTS</h2>"
 
@@ -115,13 +115,13 @@ else:
         
         if st.sidebar.button("Login"):
             try:
-                df = pd.read_csv("resources/data/students.csv")
+                df = pd.read_csv("Resources/data/students.csv")
                 df["student_id"] = df["student_id"].astype(str)
                 
                 # Auto-fix password column
                 if "password" not in df.columns:
                     df["password"] = "1234"
-                    df.to_csv("resources/data/students.csv", index=False)
+                    df.to_csv("Resources/data/students.csv", index=False)
                 
                 df["password"] = df["password"].astype(str)
                 user = df[(df["student_id"] == sid) & (df["password"] == spass)]
@@ -152,9 +152,9 @@ else:
 if st.session_state.is_admin:
     st.title("🛡️ Principal's Command Center")
     try:
-        df_students = pd.read_csv("resources/data/students.csv")
-        df_msgs = pd.read_csv("resources/data/messages.csv")
-        df_results = pd.read_csv("resources/data/results.csv")
+        df_students = pd.read_csv("Resources/data/students.csv")
+        df_msgs = pd.read_csv("Resources/data/messages.csv")
+        df_results = pd.read_csv("Resources/data/results.csv")
         
         m1, m2, m3, m4 = st.columns(4)
         m1.metric("Total Students", len(df_students))
@@ -177,7 +177,7 @@ if st.session_state.is_admin:
                 p = st.text_input("Password", value="1234")
                 if st.form_submit_button("Add"):
                     new = pd.DataFrame([{"student_id": i, "name": n, "fees_due": f, "password": p, "attendance": "85%"}])
-                    pd.concat([df_students, new], ignore_index=True).to_csv("resources/data/students.csv", index=False)
+                    pd.concat([df_students, new], ignore_index=True).to_csv("Resources/data/students.csv", index=False)
                     st.success("Added!")
                     st.rerun()
     except: st.error("Database Missing")
@@ -185,7 +185,7 @@ if st.session_state.is_admin:
 # 🛑 STUDENT PAGES
 else:
     if selected == "Home":
-        try: boy_html = get_img_with_href("resources/images/boy_hero.png", 300)
+        try: boy_html = get_img_with_href("Resources/images/boy_hero.png", 300)
         except: boy_html = ""
         st.markdown(f"""
         <div class="hero-container" style="display: flex; align-items: center; justify-content: center; gap: 40px;">
@@ -240,14 +240,14 @@ else:
                             st.info(f"You scored {score}/3")
                         
                         # Save Data
-                        try: df=pd.read_csv("resources/data/results.csv")
+                        try: df=pd.read_csv("Resources/data/results.csv")
                         except: df=pd.DataFrame(columns=["Name","Score","Date"])
                         new={"Name":st.session_state.student_name,"Score":score,"Date":datetime.now().strftime("%Y-%m-%d")}
-                        pd.concat([df,pd.DataFrame([new])],ignore_index=True).to_csv("resources/data/results.csv",index=False)
+                        pd.concat([df,pd.DataFrame([new])],ignore_index=True).to_csv("Resources/data/results.csv",index=False)
             
             with t2:
                 try:
-                    df=pd.read_csv("resources/data/results.csv")
+                    df=pd.read_csv("Resources/data/results.csv")
                     my=df[df["Name"]==st.session_state.student_name]
                     if not my.empty: st.line_chart(my[["Date","Score"]].set_index("Date"))
                     else: st.info("No test history found.")
@@ -268,7 +268,7 @@ else:
             }
             
             for name, filename in files.items():
-                filepath = f"resources/docs/{filename}"
+                filepath = f"Resources/docs/{filename}"
                 
                 # Card Styling for files
                 col1, col2 = st.columns([3, 1])
@@ -292,9 +292,9 @@ else:
         with st.form("contact"):
             n=st.text_input("Name"); m=st.text_input("Msg")
             if st.form_submit_button("Send"):
-                try: df=pd.read_csv("resources/data/messages.csv")
+                try: df=pd.read_csv("Resources/data/messages.csv")
                 except: df=pd.DataFrame(columns=["Name","Message"])
-                pd.concat([df,pd.DataFrame([{"Name":n,"Message":m}])],ignore_index=True).to_csv("resources/data/messages.csv",index=False)
+                pd.concat([df,pd.DataFrame([{"Name":n,"Message":m}])],ignore_index=True).to_csv("Resources/data/messages.csv",index=False)
                 st.success("Sent!")
 
 # --- 6. FOOTER ---
