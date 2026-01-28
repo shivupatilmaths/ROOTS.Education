@@ -153,7 +153,7 @@ elif selected == "PDP Session":
         """)
         st.button("Join Live Session")
     with c2:
-        st.video("https://www.youtube.com/watch?v=ysz5S6PUM-U") 
+        st.video("https://www.youtube.com/watch?v=kEJ9qGq48-g") 
 
 elif selected == "Login":
     st.title("🔐 Student Portal")
@@ -236,4 +236,5 @@ elif selected == "Login":
 
 # Footer
 st.markdown('<div class="footer">© 2026 ROOTS Education</div>', unsafe_allow_html=True)
+
 
