@@ -13,7 +13,7 @@ st.set_page_config(page_title="ROOTS Education", page_icon="🌱", layout="wide"
 # Custom CSS for "Cards" and "Hero Section"
 st.markdown("""
 <style>
-    .block-container { padding-top: 1rem; padding-bottom: 5rem; }
+    .block-container { padding-top: 5rem; padding-bottom: 5rem; }
     
     /* Hero Section */
     .hero {
@@ -236,3 +236,4 @@ elif selected == "Login":
 
 # Footer
 st.markdown('<div class="footer">© 2026 ROOTS Education</div>', unsafe_allow_html=True)
+
