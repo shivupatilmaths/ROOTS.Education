@@ -103,3 +103,31 @@ elif selected == "Login":
                     st.dataframe(df) # Show full data
             else:
                 st.error("Wrong Key")
+                # ... (Below the "Update Attendance" block) ...
+
+                    st.divider()
+                    
+                    # --- NEW FEATURE: DANGER ZONE (DELETE) ---
+                    st.subheader("⛔ Danger Zone")
+                    
+                    with st.expander("🗑️ Delete Student Permanently"):
+                        st.error("Warning: This action cannot be undone.")
+                        
+                        # 1. Select Victim
+                        # We recycle the 'all_ids' list we made earlier
+                        student_to_delete = st.selectbox("Select Student to Remove", all_ids)
+                        
+                        # 2. Safety Check (Checkbox)
+                        confirm = st.checkbox(f"I understand that {student_to_delete} will be deleted forever.")
+                        
+                        # 3. The Red Button
+                        if st.button("❌ Delete Student"):
+                            if confirm:
+                                with st.spinner("Deleting..."):
+                                    if logic.delete_student(student_to_delete):
+                                        st.success(f"Goodbye! {student_to_delete} has been removed.")
+                                        st.cache_data.clear() # CRITICAL: Refresh memory immediately
+                                        st.rerun() # Rerun app to update the lists
+                            else:
+                                st.warning("Please check the confirmation box first.")
+
