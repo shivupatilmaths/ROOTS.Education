@@ -33,7 +33,6 @@ def generate_pdf_report(student_name, attendance, fees_status):
     pdf.cell(0, 10, f"Attendance: {attendance}", ln=True)
     pdf.cell(0, 10, f"Fees Status: {fees_status}", ln=True)
     
-    # FIXED: Return bytes directly
     return bytes(pdf.output(dest="S"))
 
 # --- ADD NEW STUDENT ---
@@ -47,27 +46,25 @@ def add_student(student_id, name, password, attendance, fees_due):
         st.error(f"Error adding student: {e}")
         return False
 
-# --- NEW: UPDATE ATTENDANCE ---
+# --- UPDATE ATTENDANCE ---
 def update_attendance(student_id, new_attendance):
     try:
         sheet = connect_to_gsheet()
         if sheet:
-            # 1. Find the Cell where the Student ID is located
             cell = sheet.find(student_id)
-            # 2. Update the cell in the 'Attendance' column (Column 4)
             sheet.update_cell(cell.row, 4, f"{new_attendance}%")
             return True
     except Exception as e:
         st.error(f"Update Error: {e}")
         return False
-        # --- NEW: DELETE STUDENT ---
+
+# --- NEW: DELETE STUDENT ---
 def delete_student(student_id):
     try:
         sheet = connect_to_gsheet()
         if sheet:
             # 1. Find the row where the student is
             cell = sheet.find(student_id)
-            
             # 2. Delete that specific row
             sheet.delete_row(cell.row)
             return True
