@@ -60,3 +60,17 @@ def update_attendance(student_id, new_attendance):
     except Exception as e:
         st.error(f"Update Error: {e}")
         return False
+        # --- NEW: DELETE STUDENT ---
+def delete_student(student_id):
+    try:
+        sheet = connect_to_gsheet()
+        if sheet:
+            # 1. Find the row where the student is
+            cell = sheet.find(student_id)
+            
+            # 2. Delete that specific row
+            sheet.delete_row(cell.row)
+            return True
+    except Exception as e:
+        st.error(f"Deletion Error: {e}")
+        return False
