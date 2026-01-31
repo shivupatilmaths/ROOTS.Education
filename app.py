@@ -50,7 +50,6 @@ elif selected == "Login":
                 if not user.empty and str(user.iloc[0]["password"]) == pwd:
                     st.success(f"Welcome, {user.iloc[0]['name']}")
                     
-                    # Generate PDF
                     pdf_data = logic.generate_pdf_report(
                         user.iloc[0]['name'], 
                         user.iloc[0]['attendance'],
@@ -70,7 +69,8 @@ elif selected == "Login":
                 sheet = logic.connect_to_gsheet()
                 if sheet:
                     df = pd.DataFrame(sheet.get_all_records())
-                    
+                    all_ids = df["student_id"].astype(str).tolist()
+
                     # --- FEATURE 1: ADD STUDENT ---
                     with st.expander("➕ Admit New Student"):
                         c1, c2 = st.columns(2)
@@ -86,48 +86,36 @@ elif selected == "Login":
                                 st.success("Student Added!")
                                 st.balloons()
                     
-                    # --- FEATURE 2: UPDATE ATTENDANCE (NEW) ---
+                    # --- FEATURE 2: UPDATE ATTENDANCE ---
                     with st.expander("📝 Update Attendance"):
-                        # Get list of IDs
-                        all_ids = df["student_id"].astype(str).tolist()
                         target_student = st.selectbox("Select Student", all_ids)
-                        
                         new_att = st.slider("New Attendance %", 0, 100, 75)
                         
                         if st.button("Update Now"):
                             if logic.update_attendance(target_student, new_att):
                                 st.success(f"Updated {target_student} to {new_att}%")
                                 st.cache_data.clear() # Refresh data
+
+                    st.divider()
+
+                    # --- FEATURE 3: DANGER ZONE (DELETE) ---
+                    st.subheader("⛔ Danger Zone")
+                    with st.expander("🗑️ Delete Student Permanently"):
+                        st.error("Warning: This action cannot be undone.")
+                        
+                        del_student = st.selectbox("Select Student to Remove", all_ids)
+                        confirm = st.checkbox(f"I understand that {del_student} will be deleted forever.")
+                        
+                        if st.button("❌ Delete Student"):
+                            if confirm:
+                                if logic.delete_student(del_student):
+                                    st.success("Student Deleted.")
+                                    st.cache_data.clear()
+                                    st.rerun()
+                            else:
+                                st.warning("Check the box to confirm.")
                     
                     st.divider()
                     st.dataframe(df) # Show full data
             else:
                 st.error("Wrong Key")
-                # ... (Below the "Update Attendance" block) ...
-
-                    st.divider()
-                    
-                    # --- NEW FEATURE: DANGER ZONE (DELETE) ---
-                    st.subheader("⛔ Danger Zone")
-                    
-                    with st.expander("🗑️ Delete Student Permanently"):
-                        st.error("Warning: This action cannot be undone.")
-                        
-                        # 1. Select Victim
-                        # We recycle the 'all_ids' list we made earlier
-                        student_to_delete = st.selectbox("Select Student to Remove", all_ids)
-                        
-                        # 2. Safety Check (Checkbox)
-                        confirm = st.checkbox(f"I understand that {student_to_delete} will be deleted forever.")
-                        
-                        # 3. The Red Button
-                        if st.button("❌ Delete Student"):
-                            if confirm:
-                                with st.spinner("Deleting..."):
-                                    if logic.delete_student(student_to_delete):
-                                        st.success(f"Goodbye! {student_to_delete} has been removed.")
-                                        st.cache_data.clear() # CRITICAL: Refresh memory immediately
-                                        st.rerun() # Rerun app to update the lists
-                            else:
-                                st.warning("Please check the confirmation box first.")
-
