@@ -66,7 +66,7 @@ def delete_student(student_id):
             # 1. Find the row where the student is
             cell = sheet.find(student_id)
             # 2. Delete that specific row
-            sheet.delete_row(cell.row)
+            sheet.delete_rows(cell.row)
             return True
     except Exception as e:
         st.error(f"Deletion Error: {e}")
